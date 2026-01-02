@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard Absensi</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <h2>ABSENSI 1 TRPL B</h2>
+        <ul>
+            <li><a href="dashboard.html" class="active">Dashboard</a></li>
+            <li><a href="matkul.html">Matakuliah</a></li>
+            <li><a href="profil.html">Profil</a></li>
+            <li><a href="#" onclick="tampilModalKeluar()">Keluar</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <div class="card">
+            <h1>Absensi Kehadiran Mahasiswa</h1>
+            <p style="margin-top: 15px; margin-bottom: 5px;">Dosen Wali: <strong>Muhammad Setya Pratama, S.Kom</strong></p>
+            <hr style="margin:15px 0">
+            <label>Matkul: </label>
+            <select id="selMatkul" style="padding:5px"></select>
+        </div>
+        
+        <div style="display: flex; gap: 15px; margin-bottom: 28px;">
+    
+        <div class="card" style="flex: 1; text-align: center; border-top: 5px solid #003366; margin-bottom: 0;">
+            <h4 style="color: #666; font-size: 0.8rem;">MASUK</h4>
+            <h2 id="countMasuk" style="color: #003366;">0</h2>
+        </div>
+
+        <div class="card" style="flex: 1; text-align: center; border-top: 5px solid #003366; margin-bottom: 0;">
+            <h4 style="color: #666; font-size: 0.8rem;">IZIN</h4>
+            <h2 id="countIzin" style="color: #003366;">0</h2>
+        </div>
+
+        <div class="card" style="flex: 1; text-align: center; border-top: 5px solid #003366; margin-bottom: 0;">
+            <h4 style="color: #666; font-size: 0.8rem;">SAKIT</h4>
+            <h2 id="countSakit" style="color: #003366;">0</h2>
+        </div>
+
+        <div class="card" style="flex: 1; text-align: center; border-top: 5px solid #003366; margin-bottom: 0;">
+            <h4 style="color: #666; font-size: 0.8rem;">ALPA</h4>
+            <h2 id="countAlpa" style="color: #003366;">0</h2>
+        </div>
+
+        </div>
+
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th><th>Nama</th><th>NIM</th><th>Absen</th>
+                </tr>
+            </thead>
+            <tbody id="listSiswa"></tbody>
+        </table>
+
+
+    </main>
+
+    <div id="modalKeluar" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Anda Yakin Ingin Keluar?</h3>
+            <div class="modal-btns">
+                <button class="btn-ya" onclick="logoutSekarang()">Ya, Keluar</button>
+                <button class="btn-batal" onclick="tutupModal()">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+    // 1. Cek Login Admin 
+    if (localStorage.getItem("statusLogin") !== "admin") {
+        alert("Silahkan login terlebih dahulu ya! Jangan nembak langsung.");
+        window.location.href = "index.html"; 
+    }
+
+    const mSelect = document.getElementById('selMatkul');
+    const tbody = document.getElementById('listSiswa');
+
+    // 2. Tampilkan daftar matkul di dropdown
+    listMatkul.forEach(m => mSelect.innerHTML += `<option value="${m.id}">${m.nama}</option>`);
+
+    // 3. Tampilkan semua mahasiswa di tabel
+    dataSiswa.forEach((s, i) => {
+        tbody.innerHTML += `
+            <tr>
+                <td>${i+1}</td>
+                <td class="nama-link" onclick="keProfil('${s.nim}')">${s.nama}</td>
+                <td>${s.nim}</td>
+                <td>
+                    <button class="btn-absen" onclick="gasAbsen('${s.nim}', 'Masuk', this)">Masuk</button>
+                    <button class="btn-absen" onclick="gasAbsen('${s.nim}', 'Izin', this)">Izin</button>
+                    <button class="btn-absen" onclick="gasAbsen('${s.nim}', 'Sakit', this)">Sakit</button>
+                    <button class="btn-absen" onclick="gasAbsen('${s.nim}', 'Alpa', this)">Alpa</button>
+                </td>
+            </tr>`;
+    });
+
+    /**
+     * FUNGSI UTAMO: GAS ABSEN
+     * Fungsi ne dipanggil pas kau klik tombol absen (Masuk/Izin/Sakit/Alpa)
+     */
+    function gasAbsen(nim, st, btn) {
+        const matkulId = mSelect.value;
+        
+        // Ambik data absen dari memori
+        let db = JSON.parse(localStorage.getItem("db_absen_trpl")) || {};
+
+        // Simpen status barunyo
+        if (!db[nim]) db[nim] = {};
+        db[nim][matkulId] = st;
+
+        // Masukkan balik ke memori browser
+        localStorage.setItem("db_absen_trpl", JSON.stringify(db));
+
+        // --- BAGIAN NE BIAR TOMBOL BERUBAH WARNO ---
+        // Cari semua tombol di baris tu, hapus class 'aktif' nyo
+        const barisTombol = btn.parentElement.querySelectorAll('.btn-absen');
+        barisTombol.forEach(b => b.classList.remove('aktif'));
+        
+        // Kasih class 'aktif' cuma di tombol yang kau klik tadi
+        btn.classList.add('aktif');
+
+        // Update angko statistik di kotak atas
+        hitungRekap();
+        
+        console.log(`Sip! ${nim} lah diabsen ${st}`);
+    }
+
+    /**
+     * FUNGSI HITUNG REKAP
+     * Biar angko di kotak Statistik (Masuk, Izin, Sakit, Alpa) update otomatis
+     */
+    function hitungRekap() {
+        const matkulId = mSelect.value;
+        const db = JSON.parse(localStorage.getItem("db_absen_trpl")) || {};
+        
+        let rekap = { Masuk: 0, Izin: 0, Sakit: 0, Alpa: 0 };
+
+        Object.keys(db).forEach(nim => {
+            const status = db[nim][matkulId];
+            if (status && rekap[status] !== undefined) {
+                rekap[status]++;
+            }
+        });
+
+        // Masukkan angko hasil hitungan ke HTML
+        document.getElementById('countMasuk').innerText = rekap.Masuk;
+        document.getElementById('countIzin').innerText = rekap.Izin;
+        document.getElementById('countSakit').innerText = rekap.Sakit;
+        document.getElementById('countAlpa').innerText = rekap.Alpa;
+    }
+
+    /**
+     * FUNGSI UPDATE TAMPILAN TOMBOL
+     * Biar pas kau ganti matkul, tombol yang lah diklik tetep warno biru
+     */
+    function updateTampilanTombol() {
+        const matkulId = mSelect.value;
+        const db = JSON.parse(localStorage.getItem("db_absen_trpl")) || {};
+        const barisTabel = document.querySelectorAll('#listSiswa tr');
+
+        barisTabel.forEach(tr => {
+            const nim = tr.cells[2].innerText; 
+            const tombols = tr.querySelectorAll('.btn-absen');
+            
+            // Bersihkan dulu warno aktifnyo
+            tombols.forEach(b => b.classList.remove('aktif'));
+
+            // Kalo ado data absen, nyalakan warno tombol yang pas
+            if (db[nim] && db[nim][matkulId]) {
+                const statusSimpanan = db[nim][matkulId];
+                tombols.forEach(b => {
+                    if (b.innerText === statusSimpanan) {
+                        b.classList.add('aktif');
+                    }
+                });
+            }
+        });
+    }
+
+    // Event pas ganti matkul: Update warno tombol & update angko rekap
+    mSelect.addEventListener('change', () => {
+        updateTampilanTombol();
+        hitungRekap();
+    });
+
+    // Pas halaman baru dibuka: Jalankan semua pengecekan
+    window.onload = function() {
+        updateTampilanTombol();
+        hitungRekap();
+    };
+
+    // Fungsi pindah ke profil
+    function keProfil(nim) {
+        localStorage.setItem("targetNim", nim);
+        window.location.href = "profil.html";
+    }
+</script>
+</body>
+</html>

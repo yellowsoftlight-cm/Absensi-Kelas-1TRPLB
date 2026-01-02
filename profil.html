@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Profil Mahasiswa</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="sidebar">
+        <h2>ABSENSI 1 TRPL B</h2>
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="matkul.html">Matakuliah</a></li>
+            <li><a href="profil.html" class="active">Profil</a></li>
+            <li><a href="#" onclick="tampilModalKeluar()">Keluar</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <div class="card" id="profilBox"></div>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Matakuliah</th>
+                    <th>Dosen</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody id="rekapBox"></tbody>
+        </table>
+    </main>
+
+    <div id="modalKeluar" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Yakin Ingin Keluar?</h3>
+            <div class="modal-btns">
+                <button class="btn-ya" onclick="logoutSekarang()">Ya, Keluar</button>
+                <button class="btn-batal" onclick="tutupModal()">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    
+    <script>
+        // untuk nyari tau NIM siape yang nak ditengok profil e (dari Dashboard)
+        const target = localStorage.getItem("targetNim") || dataSiswa[0].nim;
+        
+        // nyari data lengkap mahasiswa tu di daftar dataSiswa
+        const s = dataSiswa.find(x => x.nim === target);
+        
+        // untuk ngmbik data absen yang lah tesimpen di memori browser
+        const db = JSON.parse(localStorage.getItem("db_absen_trpl")) || {};
+
+        // ni untuk nge cek hari ne hari ape (Senin, Selasa, dll.)
+        const hariIni = getHariIni();
+        
+        // untuk nengok jadwal harian, ade matkul ape b hari ne
+        const matkulHariIni = jadwalHarian[hariIni] || [];
+
+        // ni masukken biodata mahasiswa tadi ke dalam kotak profilBox di HTML
+        document.getElementById('profilBox').innerHTML = `
+            <h2>Profil Mahasiswa</h2>
+            <p>Nama: <strong>${s.nama}</strong></p>
+            <p>NIM: <strong>${s.nim}</strong></p>
+            <p>Jadwal Hari: <span style="color: #003366; font-weight: bold;">${hariIni}</span></p>
+        `;
+
+        // untuk nyiapken tempat buat nampilin daftar absen e
+        const rBox = document.getElementById('rekapBox');
+        rBox.innerHTML = ""; // Bersihkn dulu biar dak numpuk
+
+        // ni untuk nge cek, ade matkul dak hari ne?
+        if (matkulHariIni.length > 0) {
+
+            // ni biar pacak buat baris tabel e sikok' tiap matkul hari ne
+            matkulHariIni.forEach(idMatkul => {
+                
+                // untuk nyari matkul (name kek dosen) berdasarkan ID e
+                const m = listMatkul.find(item => item.id === idMatkul);
+                
+                // ni untuk nge cek status absen mahasiswa tu (Masuk/Izin/Sakit), kalo dakde kasih tanda "-"
+                const status = (db[target] && db[target][m.id]) ? db[target][m.id] : "-";
+                
+                // ni masukkn baris e ke dalam tabel rekapBox
+                rBox.innerHTML += `
+                    <tr>
+                        <td>${m.nama}</td>
+                        <td>${m.dosen}</td>
+                        <td style="font-weight:bold; color:#003366">${status}</td>
+                    </tr>
+                `;
+            });
+        } 
+        // ni kalo emang dakde jadwal hari ne (misal hari Kamis, Sabtu kek Minggu tu)
+        else {
+            rBox.innerHTML = `<tr><td colspan="3">Dak ade jadwal matakuliah hari ne, Ji.</td></tr>`;
+        }
+    </script>
+</body>
+</html>

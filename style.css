@@ -1,0 +1,248 @@
+
+
+/* Bagian ne biar tampilan awal bersih kk font e same.*/
+
+
+* { 
+    margin: 0;           
+    padding: 0;          
+    box-sizing: border-box; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}
+
+body { 
+    background-color: #FDFDF5; 
+    color: #333;              
+    display: flex;             /* ni biar navbar kek isi konten e sejajar */
+    min-height: 100vh;         /* tinggi seukuran layar penuh*/
+
+}
+
+
+
+/* CSS NAVBAR E*/
+
+
+
+.sidebar { 
+    width: 250px;              
+    background-color: #003366; 
+    color: white;              
+    position: fixed;           /* Biar die diem di situ, dak begerek pas kite scroll */
+    height: 100vh;             
+    padding: 20px;             
+}
+
+.sidebar h2 { 
+    text-align: center;       
+    margin-bottom: 30px;       
+    border-bottom: 1px solid #ffffff33; /* n untuk garis tipis di bawah judul */
+    padding-bottom: 15px;      
+    font-size: 1.1rem;        
+    text-transform: uppercase; /* biar tulisan jadi huruf besak semue */
+}
+
+.sidebar ul { 
+    list-style: none;          /* Ni untuk ngilangken tanda titik-titik (bullet) di daftar menu */
+}
+
+.sidebar a { 
+    color: white;            
+    text-decoration: none;     
+    padding: 12px;             
+    display: block;           
+    border-radius: 8px;        
+    margin-bottom: 5px;        
+    transition: background 0.3s; /* Biar pas disentuh kursor warna e berubah halus */
+}
+
+
+/* ni untuk warne pas menu disentuh/pegang */
+.sidebar a:hover, 
+.sidebar a.active { 
+    background-color: #00509d; 
+}
+
+
+
+
+/* NE UNTUK ISI KONTEN E
+   Bagian ne buat ngatur ruang putih tempat kite nampilkan data e. */
+
+.content { 
+    margin-left: 250px;        
+    padding: 40px;             
+    width: 100%;               
+}
+
+
+/* ni untuk kotak kartu putih kek pembungkus tulisan atau tabel e */
+
+.card { 
+    background-color: white;   
+    padding: 25px;            
+    border-radius: 12px;       
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+    margin-bottom: 25px;       
+}
+
+
+
+/* NI UNTUK TABEL DATA (DAFTAR MAHASISWA & MATKUL)*/
+
+
+table { 
+    width: 100%;               
+    border-collapse: collapse; /* Biar garis antar kolom e nyatu, dak pecah */
+    background-color: white;   
+    border-radius: 10px;       
+    overflow: hidden;          /* Biar isi tabel dak keluar dari sudut tumpul tu */
+}
+
+th { 
+    background-color: #003366; 
+    color: white;              
+    padding: 15px;            
+    font-weight: 600;          
+}
+
+td { 
+    padding: 12px;             
+    border-bottom: 1px solid #eee; 
+    text-align: center;      
+}
+
+
+
+/* ne css kek name mahasiswa yang bise diklik ke profil */
+
+.nama-link { 
+    color: #003366;           
+    font-weight: bold;        
+    cursor: pointer;           
+    text-decoration: underline; /* ni garis bawah biar tau tu link */
+}
+
+
+
+/* UNTUK TOMBOL ABSENSI (INPUT)*/
+
+.btn-absen { 
+    padding: 6px 15px;         
+    border: 1px solid #ccc;    
+    background-color: white;   
+    cursor: pointer;          
+    border-radius: 6px;        
+    margin: 0 2px;             
+    transition: 0.2s;          /* Biar pas diklik perubahan warna e cepet tapi halus */
+}
+
+
+
+/* Warna tombol pas disentuh atau pas lah dipilih (diklik) */
+
+.btn-absen:hover, 
+.btn-absen.aktif { 
+    background-color: #003366; 
+    color: white;              
+    border-color: #003366;    
+}
+
+
+
+/* Bagian ne ngatur pop-up pas kite nak keluar (Logout). */
+
+
+.modal-overlay { 
+    display: none;             /* ni biar awal e disembunyikn dulu, nanti manggil pakai JS */
+    position: fixed;          
+    top: 0; left: 0; 
+    width: 100%; height: 100%; 
+    background-color: rgba(0,0,0,0.6); 
+    justify-content: center;   
+    align-items: center;       
+    z-index: 1000;             /* Biar pop-up e paling depan dak ketimpa elemen lain */
+}
+
+.modal-box { 
+    background-color: white;  
+    padding: 30px;             
+    border-radius: 15px;      
+    text-align: center;       
+    width: 380px;              
+}
+
+.modal-btns { 
+    display: flex;             /* Biar tombol 'Ya' kek 'Batal' sejajar */
+    justify-content: space-around; 
+    margin-top: 25px;         
+}
+
+.btn-ya { 
+    background-color: #dc3545; /* Warna merah kek keluar */
+    color: white; 
+    border: none; 
+    padding: 10px 25px; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-weight: bold;
+}
+
+.btn-batal { 
+    background-color: #6c757d; /* Warna abu-abu kek batal */
+    color: white; 
+    border: none; 
+    padding: 10px 25px; 
+    border-radius: 6px; 
+    cursor: pointer; 
+}
+
+
+
+/* CSS HALAMAN LOGIN E
+   ni khusus untuk tampilan awal pas nk masuk website e*/
+
+.login-screen { 
+    width: 100vw;             
+    height: 100vh;           
+    background-color: #F5F5DC; 
+    display: flex;            
+    justify-content: center;  
+    align-items: center;       
+}
+
+.login-card { 
+    background-color: white;  
+    padding: 40px;            
+    border-radius: 15px;      
+    width: 420px;             
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+    text-align: center; 
+}
+
+.login-card h2 {
+    color: #003366;           
+    margin-bottom: 10px;
+    white-space: nowrap;       /* Biar tulisan judul e dak turun ke bawah (sebaris) */
+}
+
+.login-card input { 
+    width: 100%;               
+    padding: 12px;             
+    margin: 10px 0;            /* Jarak antar input name kek nim */
+    border: 1px solid #ccc;   
+    border-radius: 8px;       
+}
+
+.login-card button { 
+    width: 100%;              
+    padding: 12px;            
+    background-color: #003366; 
+    color: white; 
+    border: none; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    font-size: 1rem;
+    margin-top: 10px;
+}

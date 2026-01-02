@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Absensi 1 TRPL B</title>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="login-screen">
+
+    <div class="login-card">
+        
+        <h2 style="color:#003366">ABSENSI KELAS 1 TRPL B</h2>
+        <p style="margin-bottom: 20px; font-size: 0.9rem;">Silahkan Login Dulu ya!</p>
+        <input type="text" id="user" placeholder="Username: ">
+        <input type="password" id="pass" placeholder="Password: ">
+        <button onclick="prosesLogin()">Masuk</button>
+        
+    </div>
+
+    <script src="data.js"></script>
+        <script>
+            function prosesLogin() {
+                // ni ngambik input dari form
+                const uInput = document.getElementById('user').value.trim().toUpperCase();
+                const pInput = document.getElementById('pass').value.trim();
+
+                // untuk nge cek input e cocok kek dataAdmin yang ade di data.js
+                if (uInput === dataAdmin.username && pInput === dataAdmin.password) {
+            
+                // Kalo bener, simpen tanda login Admin e di memori
+                    localStorage.setItem("statusLogin", "admin");
+                    localStorage.setItem("userAktif", "Administrator TRPL");
+            
+                // ni biar langsung ngarah ke dashboard
+                    window.location.href = "dashboard.html";
+            
+                 } 
+            
+                else {
+                // ne kalo salah
+                    alert("Maaf, Username atau Password Admin salah! Khusus Admin yang bisa masuk.");
+                }
+             }
+    </script>
+
+</body>
+</html>

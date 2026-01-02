@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Jadwal Matakuliah - TRPL B</title>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h2>ABSENSI 1 TRPL B</h2>
+        <ul>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="matkul.html" class="active">Matakuliah</a></li>
+            <li><a href="profil.html">Profil</a></li>
+            
+            <li><a href="#" onclick="tampilModalKeluar()">Keluar</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        
+        <div class="card">
+            <h1>Daftar Matakuliah & Dosen</h1>
+            <p style="margin-top: 10px; margin-bottom: 5px;">Program Studi: <strong>D4 Teknologi Rekayasa Perangkat Lunak (TRPL)</strong></p>
+            <p>Kelas: <strong>1 TRPL B</strong></p>
+        </div>
+
+        <div class="card">
+            <h3>Informasi Jadwal Semester Ini</h3>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">
+                * Data untuk daftar matkul yang bisa diabsen.
+            </p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Kode / ID</th>
+                        <th>Nama Mata Kuliah</th>
+                        <th>Dosen Pengampu</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelMatkul"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <div id="modalKeluar" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Anda Yakin Mau Keluar?</h3>
+            <p style="margin-bottom: 20px;">Kalau keluar, kamu akan balik lagi ke halaman login.</p>
+            <div class="modal-btns">
+                <button class="btn-ya" onclick="logoutSekarang()">Ya, Keluar</button>
+                <button class="btn-batal" onclick="tutupModal()">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+
+    <script>
+        /**
+         * Fungsi renderMatkul()
+         * untuk mindahin data dari 'data.js' ke tabel HTML di atas.
+         */
+        function renderMatkul() {
+            // untuk nyari elemen tabel dari id 'tabelMatkul'
+            const tbody = document.getElementById('tabelMatkul');
+            
+            // untuk ngosongkn isi e biar data dak nambah terus pas di-refresh
+            tbody.innerHTML = ""; 
+
+            /**
+             * ForEach ne art e "tiap data matkul yang ade, tolong gawe n..."
+             * m  tu data matakuliah e (id, name, dosen)
+             * index tu nomor urut e (misal mulai dari 0)
+             */
+            listMatkul.forEach((m, index) => {
+                // Tambahkan baris baru ke dalam tabel secara otomatis
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        
+                        <td style="font-weight: bold; color: #003366;">${m.id.toUpperCase()}</td>
+                        
+                        <td style="text-align: left; padding-left: 30px;">${m.nama}</td>
+                        
+                        <td>${m.dosen}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        /**
+         * Perintah ne arti e: "Pas halaman lah selesai loading,
+         * langsung jalankan fungsi renderMatkul di atas tadi."
+         */
+        window.onload = renderMatkul;
+    </script>
+
+</body>
+</html>

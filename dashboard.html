@@ -73,7 +73,7 @@
 
     <script src="data.js"></script>
     <script>
-    // 1. Cek Login Admin 
+    // 1. untuk nge cek Login Admin 
     if (localStorage.getItem("statusLogin") !== "admin") {
         alert("Silahkan login terlebih dahulu ya! Jangan nembak langsung.");
         window.location.href = "index.html"; 
@@ -82,10 +82,10 @@
     const mSelect = document.getElementById('selMatkul');
     const tbody = document.getElementById('listSiswa');
 
-    // 2. Tampilkan daftar matkul di dropdown
+    // ni tuk nampilken daftar matkul di dropdown
     listMatkul.forEach(m => mSelect.innerHTML += `<option value="${m.id}">${m.nama}</option>`);
 
-    // 3. Tampilkan semua mahasiswa di tabel
+    // 3. ni untuk nampilkan semua nama mahasiswa di tabel
     dataSiswa.forEach((s, i) => {
         tbody.innerHTML += `
             <tr>
@@ -102,8 +102,7 @@
     });
 
     /**
-     * FUNGSI UTAMO: GAS ABSEN
-     * Fungsi ne dipanggil pas kau klik tombol absen (Masuk/Izin/Sakit/Alpa)
+     * Fungsi ne dipanggil pas di klik tombol absen e (Masuk/Izin/Sakit/Alpa)
      */
     function gasAbsen(nim, st, btn) {
         const matkulId = mSelect.value;
@@ -111,30 +110,29 @@
         // Ambik data absen dari memori
         let db = JSON.parse(localStorage.getItem("db_absen_trpl")) || {};
 
-        // Simpen status barunyo
+        // tuk nyimpen status baru e
         if (!db[nim]) db[nim] = {};
         db[nim][matkulId] = st;
 
-        // Masukkan balik ke memori browser
+        // ni tuk masukken balik ke memori browser
         localStorage.setItem("db_absen_trpl", JSON.stringify(db));
 
-        // --- BAGIAN NE BIAR TOMBOL BERUBAH WARNO ---
-        // Cari semua tombol di baris tu, hapus class 'aktif' nyo
+        // --- BAGIAN NE BIAR TOMBOL BERUBAH WARNE ---
+        // Cari semua tombol di baris tu, hapus class 'aktif' e
         const barisTombol = btn.parentElement.querySelectorAll('.btn-absen');
         barisTombol.forEach(b => b.classList.remove('aktif'));
         
-        // Kasih class 'aktif' cuma di tombol yang kau klik tadi
+        // Kasih class 'aktif' cuma di tombol yang di klik tadi
         btn.classList.add('aktif');
 
-        // Update angko statistik di kotak atas
+        // Update angka statistik di kotak atas
         hitungRekap();
         
         console.log(`Sip! ${nim} lah diabsen ${st}`);
     }
 
     /**
-     * FUNGSI HITUNG REKAP
-     * Biar angko di kotak Statistik (Masuk, Izin, Sakit, Alpa) update otomatis
+     * Ni fungsi biar angka di kotak Statistik te-update otomatis
      */
     function hitungRekap() {
         const matkulId = mSelect.value;
@@ -149,16 +147,15 @@
             }
         });
 
-        // Masukkan angko hasil hitungan ke HTML
+        // Masukkn angka hasil hitungan e ke HTML
         document.getElementById('countMasuk').innerText = rekap.Masuk;
         document.getElementById('countIzin').innerText = rekap.Izin;
         document.getElementById('countSakit').innerText = rekap.Sakit;
         document.getElementById('countAlpa').innerText = rekap.Alpa;
     }
 
-    /**
-     * FUNGSI UPDATE TAMPILAN TOMBOL
-     * Biar pas kau ganti matkul, tombol yang lah diklik tetep warno biru
+    /** 
+        ni fungsi pas ganti matkul, tombol yang lah diklik tetep warna biru
      */
     function updateTampilanTombol() {
         const matkulId = mSelect.value;
@@ -169,10 +166,10 @@
             const nim = tr.cells[2].innerText; 
             const tombols = tr.querySelectorAll('.btn-absen');
             
-            // Bersihkan dulu warno aktifnyo
+            // Bersihkan dulu warna aktif e
             tombols.forEach(b => b.classList.remove('aktif'));
 
-            // Kalo ado data absen, nyalakan warno tombol yang pas
+            // Kalo ade data absen, nyalakan warna tombol yang pas
             if (db[nim] && db[nim][matkulId]) {
                 const statusSimpanan = db[nim][matkulId];
                 tombols.forEach(b => {
@@ -184,7 +181,7 @@
         });
     }
 
-    // Event pas ganti matkul: Update warno tombol & update angko rekap
+    // ni tuk event pas ganti matkul: Biar Update warno tombol & update angko rekap
     mSelect.addEventListener('change', () => {
         updateTampilanTombol();
         hitungRekap();
@@ -196,11 +193,12 @@
         hitungRekap();
     };
 
-    // Fungsi pindah ke profil
+    // Fungsi pindah ke profil e
     function keProfil(nim) {
         localStorage.setItem("targetNim", nim);
         window.location.href = "profil.html";
     }
 </script>
 </body>
+
 </html>
